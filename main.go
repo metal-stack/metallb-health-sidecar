@@ -34,9 +34,14 @@ func main() {
 	jsonHandler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{})
 	log := slog.New(jsonHandler)
 
+	fatal := func(msg string, err error) {
+		log.Error(msg, "error", err)
+		os.Exit(1)
+	}
+
 	k8s, err := client.New(config.GetConfigOrDie(), client.Options{})
 	if err != nil {
-		panic(fmt.Errorf("unable to create kubernetes client: %w", err))
+		fatal("unable to create kubernetes client", err)
 	}
 
 	s := gocron.NewScheduler(time.UTC)
@@ -47,8 +52,7 @@ func main() {
 
 		res, err := getMetrics(ctx)
 		if err != nil {
-			log.Error("unable to get metrics", "error", err)
-			return
+			fatal("unable to get metrics", err)
 		}
 
 		log.Info("retrieved metrics", "stale", res.configStale, "loaded", res.configLoaded)
@@ -65,8 +69,7 @@ func main() {
 			return nil
 		})
 		if err != nil {
-			log.Error("unable to write to health config map", "error", err)
-			return
+			fatal("unable to write to health config map", err)
 		}
 
 		log.Info("successfully wrote health to config map")
