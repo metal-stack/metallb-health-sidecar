@@ -62,6 +62,7 @@ func main() {
 				Name:      "health",
 				Namespace: "metallb-system",
 			},
+			Data: map[string]string{},
 		}
 		_, err = controllerutil.CreateOrUpdate(ctx, k8s, &health, func() error {
 			health.Data["configStale"] = strconv.FormatBool(res.configStale)
