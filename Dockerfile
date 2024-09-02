@@ -1,3 +1,3 @@
-FROM alpine:3.18
+FROM gcr.io/distroless/static-debian12
 COPY bin/metallb-health-sidecar /metallb-health-sidecar
 ENTRYPOINT ["/metallb-health-sidecar"]
