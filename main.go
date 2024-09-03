@@ -34,6 +34,8 @@ func main() {
 	jsonHandler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{})
 	log := slog.New(jsonHandler)
 
+	log.Info("starting metallb health metrics sidecar")
+
 	fatal := func(msg string, err error) {
 		log.Error(msg, "error", err)
 		os.Exit(1)
